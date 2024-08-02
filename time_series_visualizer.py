@@ -28,14 +28,22 @@ def draw_line_plot():
     return fig
 
 def draw_bar_plot():
-    # Copy and modify data for monthly bar plot
-    df_bar = None
+    # Create a new DataFrame for grouping by year and month
+    df_bar = df.copy()
+    df_bar['year'] = df_bar.index.year
+    df_bar['month'] = df_bar.index.month_name()
+
+    # Group by year and month, calculate average page views
+    df_bar = df_bar.groupby(['year', 'month'])["value"].mean().unstack()
+    df_bar = df_bar[['January', 'February', 'March', 'April', 'May',
+                                'June', 'July', 'August', 'September', 'October', 'November', 'December']]
 
     # Draw bar plot
-
-
-
-
+    fig, ax = plt.subplots(figsize=(8, 7))
+    df_bar.plot(kind='bar', ax=ax)
+    plt.xlabel('Years')
+    plt.ylabel('Average Page Views')
+    plt.legend(title='Months')
 
     # Save image and return fig (don't change this part)
     fig.savefig('bar_plot.png')
