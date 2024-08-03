@@ -57,10 +57,30 @@ def draw_box_plot():
     df_box['month'] = [d.strftime('%b') for d in df_box.date]
 
     # Draw box plots (using Seaborn)
+    with plt.rc_context({'font.family': 'sans serif','font.size': 9, 'font.weight': 'ultralight'}):
+        fig, axes = plt.subplots(1, 2, figsize=(16, 6), dpi=300)
+        
+        # Yearly boxplot
+        sns.boxplot(data=df_box, x="year", y="value", hue="year", palette="tab10", 
+            legend=False, flierprops={"marker": "+", "markersize": 3}, ax=axes[0])
+        axes[0].set_title("Year-wise Box Plot (Trend)")
+        axes[0].set_xlabel("Year")
+        axes[0].set_ylabel("Page Views")
+        axes[0].set_yticks(range(0, 200_001, 20_000))
+        
+        # Monthly boxplot
+        month_order = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        month_colors = ["#EA96A3", "#E19154", "#B89C49", "#98A246", "#60AE47", "#4AAE8A", 
+            "#4BABA4", "#4FABBC", "#6DAEE2", "#B6A8EB", "#DF8FE7", "#E890C6"]
+        sns.set_palette( month_colors ) 
+        sns.boxplot(data=df_box, x="month", y="value", hue="month", hue_order=month_order, 
+            order=month_order, flierprops={"marker": "+", "markersize":3}, ax=axes[1])
+        axes[1].set_title("Month-wise Box Plot (Seasonality)")
+        axes[1].set_xlabel("Month")
+        axes[1].set_ylabel("Page Views")
+        axes[1].set_yticks(range(0, 200_001, 20_000))
 
-
-
-
+        fig.tight_layout(pad=3)
 
     # Save image and return fig (don't change this part)
     fig.savefig('box_plot.png')
